@@ -153,6 +153,16 @@ module Paypal
         Response.new response
       end
 
+      private
+
+      def initialize(params = {})
+        super({
+          :username => Paypal.username,
+          :password => Paypal.password,
+          :signature => Paypal.signature
+        }.merge(params))
+      end
+
     end
   end
 end

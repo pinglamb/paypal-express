@@ -54,6 +54,7 @@ module Paypal
   end
   self.sandbox = false
 
+  mattr_accessor :username, :password, :signature
 end
 
 require 'paypal/util'
@@ -80,3 +81,6 @@ require 'paypal/payment/recurring'
 require 'paypal/payment/recurring/activation'
 require 'paypal/payment/recurring/billing'
 require 'paypal/payment/recurring/summary'
+if defined?(Rails)
+  require 'paypal/railtie'
+end
