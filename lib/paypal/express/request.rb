@@ -8,7 +8,6 @@ module Paypal
         params = {
           :RETURNURL => return_url,
           :CANCELURL => cancel_url,
-          :LOCALECODE => options[:locale] || 'US'
         }
         if options[:no_shipping]
           params[:REQCONFIRMSHIPPING] = 0
