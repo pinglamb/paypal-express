@@ -30,11 +30,12 @@ module Paypal
         Response.new response
       end
 
-      def checkout!(token, payer_id, payment_requests, notify_url)
+      def checkout!(token, payer_id, payment_requests, notify_url, locale = 'US')
         params = {
           :TOKEN => token,
           :PAYERID => payer_id,
-          :PAYMENTREQUEST_0_NOTIFYURL => notify_url
+          :PAYMENTREQUEST_0_NOTIFYURL => notify_url,
+          :LOCALECODE => locale
         }
         Array(payment_requests).each_with_index do |payment_request, index|
           params.merge! payment_request.to_params(index)
