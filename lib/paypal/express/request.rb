@@ -14,6 +14,15 @@ module Paypal
           params[:REQCONFIRMSHIPPING] = 0
           params[:NOSHIPPING] = 1
         end
+        {
+          :solution_type => :SOLUTIONTYPE,
+          :landing_page  => :LANDINGPAGE,
+          :email         => :EMAIL,
+          :brand         => :BRANDNAME,
+          :locale        => :LOCALECODE
+        }.each do |option_key, param_key|
+          params[param_key] = options[option_key] if options[option_key]
+        end
         Array(payment_requests).each_with_index do |payment_request, index|
           params.merge! payment_request.to_params(index)
         end
@@ -26,7 +35,7 @@ module Paypal
         Response.new response
       end
 
-      def transaction_details( transaction_id )
+      def transaction_details(transaction_id)
         response = self.request :GetTransactionDetails, {:TRANSACTIONID=> transaction_id}
         Response.new response
       end

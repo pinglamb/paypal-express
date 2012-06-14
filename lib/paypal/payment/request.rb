@@ -2,6 +2,7 @@ module Paypal
   module Payment
     class Request < Base
       attr_optional :action, :currency_code, :description, :notify_url, :billing_type, :billing_agreement_description, :billing_agreement_id, :invoice_id, :custom
+      attr_optional :request_id, :seller_id
       attr_accessor :amount, :items
 
       def initialize(attributes = {})
@@ -36,7 +37,10 @@ module Paypal
           #  recurring payment doesn't support dynamic notify_url.
           :"PAYMENTREQUEST_#{index}_NOTIFYURL" => self.notify_url,
           :"L_BILLINGTYPE#{index}" => self.billing_type,
-          :"L_BILLINGAGREEMENTDESCRIPTION#{index}" => self.billing_agreement_description
+          :"L_BILLINGAGREEMENTDESCRIPTION#{index}" => self.billing_agreement_description,
+          # FOR PARALLEL PAYMENT
+          :"PAYMENTREQUEST_#{index}_PAYMENTREQUESTID" => self.request_id,
+          :"PAYMENTREQUEST_#{index}_SELLERPAYPALACCOUNTID" => self.seller_id
         }.delete_if do |k, v|
           v.blank?
         end
@@ -50,8 +54,8 @@ module Paypal
       end
 
       def items_amount
-        self.items.inject(0.0) do |total, item|
-          total += item.quantity * item.amount.to_f
+        self.items.sum do |item|
+          item.quantity * BigDecimal.new(item.amount.to_s)
         end
       end
     end
